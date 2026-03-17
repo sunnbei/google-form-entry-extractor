@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      width: 480px;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #f8f9fa;
+      color: #1a1a2e;
+    }
+
+    .header {
+      background: linear-gradient(135deg, #4285f4, #34a853);
+      color: #fff;
+      padding: 16px 20px;
+    }
+
+    .header h1 {
+      font-size: 15px;
+      font-weight: 700;
+    }
+
+    .header p {
+      font-size: 11px;
+      opacity: 0.85;
+      margin-top: 2px;
+    }
+
+    .body {
+      padding: 16px 20px;
+    }
+
+    .status {
+      font-size: 13px;
+      padding: 10px 14px;
+      border-radius: 6px;
+      margin-bottom: 12px;
+    }
+
+    .status--error {
+      background: #fef2f2;
+      color: #dc2626;
+      border: 1px solid #fecaca;
+    }
+
+    .status--info {
+      background: #eff6ff;
+      color: #2563eb;
+      border: 1px solid #bfdbfe;
+    }
+
+    .status--success {
+      background: #f0fdf4;
+      color: #16a34a;
+      border: 1px solid #bbf7d0;
+    }
+
+    .toolbar {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .btn {
+      flex: 1;
+      padding: 8px 12px;
+      border: none;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .btn:hover { opacity: 0.9; transform: translateY(-1px); }
+    .btn:active { transform: translateY(0); }
+
+    .btn--primary {
+      background: #4285f4;
+      color: #fff;
+    }
+
+    .btn--secondary {
+      background: #e5e7eb;
+      color: #374151;
+    }
+
+    .btn--copy {
+      background: #34a853;
+      color: #fff;
+    }
+
+    .table-wrap {
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      overflow: hidden;
+      max-height: 360px;
+      overflow-y: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+    }
+
+    thead { background: #f3f4f6; position: sticky; top: 0; z-index: 1; }
+
+    th {
+      text-align: left;
+      padding: 8px 12px;
+      font-weight: 600;
+      color: #6b7280;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      border-bottom: 1px solid #e5e7eb;
+    }
+
+    td {
+      padding: 8px 12px;
+      border-bottom: 1px solid #f3f4f6;
+      vertical-align: middle;
+    }
+
+    tr:last-child td { border-bottom: none; }
+    tr:hover { background: #f9fafb; }
+
+    .entry-id {
+      font-family: "SF Mono", Monaco, "Cascadia Code", monospace;
+      font-size: 11px;
+      color: #7c3aed;
+      background: #f5f3ff;
+      padding: 2px 6px;
+      border-radius: 4px;
+      cursor: pointer;
+      user-select: all;
+    }
+
+    .entry-id:hover {
+      background: #ede9fe;
+    }
+
+    .type-badge {
+      font-size: 10px;
+      padding: 2px 6px;
+      border-radius: 4px;
+      background: #e5e7eb;
+      color: #6b7280;
+      font-weight: 500;
+    }
+
+    .output-section {
+      margin-top: 12px;
+    }
+
+    .output-section h3 {
+      font-size: 12px;
+      font-weight: 600;
+      color: #6b7280;
+      margin-bottom: 6px;
+    }
+
+    .code-block {
+      background: #1e1e2e;
+      color: #cdd6f4;
+      border-radius: 8px;
+      padding: 12px;
+      font-family: "SF Mono", Monaco, monospace;
+      font-size: 11px;
+      line-height: 1.6;
+      max-height: 200px;
+      overflow-y: auto;
+      white-space: pre;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .code-block:hover::after {
+      content: "Click to copy";
+      position: absolute;
+      top: 4px;
+      right: 8px;
+      font-size: 10px;
+      color: #89b4fa;
+      background: #313244;
+      padding: 2px 8px;
+      border-radius: 4px;
+    }
+
+    .format-tabs {
+      display: flex;
+      gap: 4px;
+      margin-bottom: 8px;
+    }
+
+    .format-tab {
+      padding: 4px 10px;
+      border: 1px solid #e5e7eb;
+      border-radius: 4px;
+      font-size: 11px;
+      cursor: pointer;
+      background: #fff;
+      color: #6b7280;
+      font-weight: 500;
+    }
+
+    .format-tab.active {
+      background: #4285f4;
+      color: #fff;
+      border-color: #4285f4;
+    }
+
+    .empty {
+      text-align: center;
+      padding: 32px 16px;
+      color: #9ca3af;
+      font-size: 13px;
+    }
+
+    .footer {
+      padding: 10px 20px;
+      border-top: 1px solid #e5e7eb;
+      font-size: 10px;
+      color: #9ca3af;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>Google Form Entry Extractor</h1>
+    <p>フォームプレビューからentry IDを抽出</p>
+  </div>
+
+  <div class="body">
+    <div id="status" class="status status--info">Google Formのプレビューページで「抽出」ボタンを押してください</div>
+
+    <div class="toolbar">
+      <button class="btn btn--primary" id="extractBtn">抽出</button>
+      <button class="btn btn--copy" id="copyBtn" disabled>コピー</button>
+    </div>
+
+    <div id="results" style="display:none">
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>ラベル</th>
+              <th>Entry ID</th>
+              <th>タイプ</th>
+            </tr>
+          </thead>
+          <tbody id="tableBody"></tbody>
+        </table>
+      </div>
+
+      <div class="output-section">
+        <div class="format-tabs">
+          <button class="format-tab active" data-format="js">JS定数</button>
+          <button class="format-tab" data-format="json">JSON</button>
+          <button class="format-tab" data-format="tsv">TSV</button>
+        </div>
+        <div class="code-block" id="codeBlock"></div>
+      </div>
+    </div>
+
+    <div id="empty" class="empty" style="display:none">
+      entry IDが見つかりませんでした。<br>Google Formのプレビューページで実行してください。
+    </div>
+  </div>
+
+  <div class="footer">Google Formのプレビューページ (viewform) で使用してください</div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
